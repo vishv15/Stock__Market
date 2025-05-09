@@ -24,17 +24,7 @@ A Django-based web application for stock analysis, technical indicators, candles
 - **Download & Store Historical Data:** Efficient CSV storage for fast access
 
 ## Demo
-![Register](static/charts/register.png)
-
-![Register Screenshot](https://raw.githubusercontent.com/vishv15/Stock_Market/main/static/charts/register.png)
-
-![Candlestick Chart Example](static/charts/candlestick_example.png)
-
-![Candle Chart](static/charts/Chart.png)
-
-![Forcast Example](static/charts/Forcast.png)
-
-
+![Register](static/charts/Login.png)
 
 
 ## Requirements
@@ -93,13 +83,16 @@ A Django-based web application for stock analysis, technical indicators, candles
 ![Dashboard](static/charts/dashboard_example.png)
 
 ### Candlestick Chart
-![Candlestick Chart](static/charts/candlestick_example.png)
+![Candlestick Chart](static/charts/Chart.png)
 
 ### Stock Screener
-![Stock Screener](static/charts/screener_example.png)
+![Stock Screener](static/charts/Screener.png)
 
 ### Pattern Recognition
-![Pattern Recognition](static/charts/patterns_example.png)
+![Pattern Recognition](static/charts/Pattern.png)
+
+### Forcast
+![Forcast](static/charts/Forcast.png)
 
 ## License
 
