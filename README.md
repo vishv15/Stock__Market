@@ -13,15 +13,31 @@ A Django-based web application for stock analysis, technical indicators, candles
 
 ![Dashboard Screenshot](static/charts/dashboard_example.png)
 
-## Features
+## 📊 Features
 
-- **User Authentication:** Register, login, and logout securely
-- **Interactive Stock Price Charts:** Candlestick and line charts
-- **Technical Indicators:** RSI, MACD, Bollinger Bands, and more
-- **Candlestick Pattern Detection:** Bullish Engulfing, Bearish Engulfing, Hammer, Doji, etc.
-- **Stock Screener:** Analyze stocks with key financial metrics
-- **Stock Price Forecasting:** Multiple machine learning models (Random Forest, SVM, Decision Tree, Linear Regression)
-- **Download & Store Historical Data:** Efficient CSV storage for fast access
+- **User Authentication:**
+  - Secure registration, login, and logout functionality using Django's built-in authentication system.
+  
+- **Interactive Stock Price Charts:**
+  - View stock price trends in **candlestick** and **line chart** formats, powered by `plotly` and `mplfinance`.
+  
+- **Technical Indicators:**
+  - Gain insights into stock performance using **RSI**, **MACD**, **Bollinger Bands**, and other popular technical indicators.
+  
+- **Candlestick Pattern Detection:**
+  - Recognize key candlestick patterns like **Bullish Engulfing**, **Bearish Engulfing**, **Hammer**, **Doji**, etc.
+  
+- **Stock Screener:**
+  - Filter and analyze stocks based on key financial metrics like **P/E ratio**, **market cap**, **price-to-book ratio**, and more.
+  
+- **Stock Price Forecasting:**
+  - Predict future stock prices using advanced **machine learning models** like **Random Forest**, **SVM**, **Decision Trees**, and **Linear Regression**.
+  
+- **Download & Store Historical Data:**
+  - Efficient CSV storage for fast access to historical stock data, allowing for quick analysis and data retrieval.
+  
+- **Advanced Analytics:**
+  - Use machine learning models for deep market analysis and investment decision-making.
 
 ## Demo
 ![Register](static/charts/Login.png)
