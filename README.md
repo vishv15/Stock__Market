@@ -26,7 +26,7 @@ A Django-based web application for stock analysis, technical indicators, candles
 ## Demo
 ![Register](static/charts/register.png)
 
-![Dashboard Screenshot](https://raw.githubusercontent.com/vishv15/Stock_Market/main/static/charts/register.png)
+![Register Screenshot](https://raw.githubusercontent.com/vishv15/Stock_Market/main/static/charts/register.png)
 
 ![Candlestick Chart Example](static/charts/candlestick_example.png)
 
