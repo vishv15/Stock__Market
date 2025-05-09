@@ -2,6 +2,15 @@
 
 A Django-based web application for stock analysis, technical indicators, candlestick pattern recognition, and stock forecasting using machine learning models.
 
+## 🔧 Tech Stack
+
+[![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)&nbsp;
+[![Django](https://img.shields.io/badge/Django-3.x-green?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)&nbsp;
+[![yfinance](https://img.shields.io/badge/yfinance-lightgrey?style=for-the-badge)](https://pypi.org/project/yfinance/)&nbsp;
+[![scikit-learn](https://img.shields.io/badge/Scikit--Learn-orange?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+
+---
+
 ![Dashboard Screenshot](static/charts/dashboard_example.png)
 
 ## Features
@@ -17,6 +26,7 @@ A Django-based web application for stock analysis, technical indicators, candles
 ## Demo
 ![Register](static/charts/register.png)
 
+![Dashboard Screenshot](https://raw.githubusercontent.com/vishv15/Stock_Market/main/static/charts/register.png)
 
 ![Candlestick Chart Example](static/charts/candlestick_example.png)
 
