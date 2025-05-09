@@ -7,7 +7,10 @@ A Django-based web application for stock analysis, technical indicators, candles
 [![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)&nbsp;
 [![Django](https://img.shields.io/badge/Django-3.x-green?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)&nbsp;
 [![yfinance](https://img.shields.io/badge/yfinance-lightgrey?style=for-the-badge)](https://pypi.org/project/yfinance/)&nbsp;
-[![scikit-learn](https://img.shields.io/badge/Scikit--Learn-orange?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![scikit-learn](https://img.shields.io/badge/Scikit--Learn-orange?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)&nbsp;
+[![matplotlib](https://img.shields.io/badge/Matplotlib-orange?style=for-the-badge&logo=matplotlib&logoColor=white)](https://matplotlib.org/)&nbsp;
+[![plotly](https://img.shields.io/badge/Plotly-blue?style=for-the-badge&logo=plotly&logoColor=white)](https://plotly.com/)
+
 
 ---
 
