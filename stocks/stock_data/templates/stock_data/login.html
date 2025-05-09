@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(120deg, #0a0f24 0%, #1b2838 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+        .candlestick-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .login-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(20, 30, 50, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0,255,150,0.13), 0 1.5px 12px 0 rgba(0,200,255,0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(0,255,150,0.13);
+            padding: 48px 36px 36px 36px;
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .login-card h2 {
+            color: #00ff99;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .login-card p {
+            color: #b2b2b2;
+            font-size: 1rem;
+            margin-bottom: 28px;
+        }
+        .login-card form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 22px;
+        }
+        .input-group input {
+            width: -webkit-fill-available;
+            
+            padding: 14px 16px 14px 44px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255,255,255,0.10);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: background 0.2s;
+        }
+        .input-group input:focus {
+            background: rgba(0,255,150,0.08);
+        }
+        .input-group .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00ff99;
+            font-size: 1.1rem;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #00ff99 0%, #00c8ff 100%);
+            color: #0a0f24;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s, color 0.2s;
+            box-shadow: 0 2px 12px 0 rgba(0,255,150,0.13);
+        }
+        .login-btn:hover {
+            background: linear-gradient(90deg, #00c8ff 0%, #00ff99 100%);
+            color: #fff;
+        }
+        .register-link {
+            margin-top: 24px;
+            color: #b2b2b2;
+            font-size: 0.98rem;
+        }
+        .register-link a {
+            color: #00ff99;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .register-link a:hover {
+            color: #00c8ff;
+            text-decoration: underline;
+        }
+        .error-message {
+            background: rgba(255, 87, 87, 0.13);
+            color: #ff5757;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            text-align: center;
+            font-size: 0.98rem;
+        }
+        @media (max-width: 500px) {
+            .login-card {
+                width: 95vw;
+                padding: 32px 10vw 28px 10vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas class="candlestick-bg"></canvas>
+    <div class="login-card">
+        <h2><i class="fa-solid fa-chart-line"></i> Stock Login</h2>
+        <p>Welcome to Vishv Stocks! Please login to continue.</p>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <span class="icon"><i class="fa fa-user"></i></span>
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <span class="icon"><i class="fa fa-lock"></i></span>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        <div class="register-link">
+            Don't have an account? <a href="{% url 'register_view' %}">Register</a>
+        </div>
+    </div>
+    <script>
+        // Animated candlestick chart background
+        const canvas = document.querySelector('.candlestick-bg');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let candles = [];
+        let candleWidth = 14;
+        let gap = 8;
+        let maxCandles = Math.floor(window.innerWidth / (candleWidth + gap));
+        let baseY = canvas.height / 2;
+        function randomCandle(x) {
+            let open = baseY + (Math.random() - 0.5) * 80;
+            let close = open + (Math.random() - 0.5) * 60;
+            let high = Math.max(open, close) + Math.random() * 30;
+            let low = Math.min(open, close) - Math.random() * 30;
+            let color = close > open ? "#00ff99" : "#ff4d6d";
+            return {x, open, close, high, low, color};
+        }
+        function initCandles() {
+            candles = [];
+            let x = 40;
+            for (let i = 0; i < maxCandles; i++) {
+                candles.push(randomCandle(x));
+                x += candleWidth + gap;
+            }
+        }
+        function drawCandles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let candle of candles) {
+                // Wick
+                ctx.beginPath();
+                ctx.strokeStyle = candle.color + "99";
+                ctx.lineWidth = 2;
+                ctx.moveTo(candle.x + candleWidth/2, candle.high);
+                ctx.lineTo(candle.x + candleWidth/2, candle.low);
+                ctx.stroke();
+                // Body
+                ctx.beginPath();
+                ctx.fillStyle = candle.color + "cc";
+                ctx.fillRect(
+                    candle.x,
+                    Math.min(candle.open, candle.close),
+                    candleWidth,
+                    Math.abs(candle.close - candle.open) || 4
+                );
+            }
+        }
+        function animateCandles() {
+            for (let candle of candles) {
+                candle.x -= 1.2;
+            }
+            if (candles.length && candles[0].x < -candleWidth) {
+                candles.shift();
+                let lastX = candles.length ? candles[candles.length-1].x : 40;
+                candles.push(randomCandle(lastX + candleWidth + gap));
+            }
+            drawCandles();
+            requestAnimationFrame(animateCandles);
+        }
+        function onResize() {
+            resizeCanvas();
+            maxCandles = Math.floor(window.innerWidth / (candleWidth + gap));
+            baseY = canvas.height / 2;
+            initCandles();
+        }
+        window.addEventListener('resize', onResize);
+        onResize();
+        animateCandles();
+    </script>
+</body>
+</html>

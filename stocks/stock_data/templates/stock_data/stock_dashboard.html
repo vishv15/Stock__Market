@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #101522;
+            --card-bg: rgba(24,28,47,0.95);
+            --accent: #00ff99;
+            --accent2: #00c8ff;
+            --text-color: #e0e1dd;
+            --nav-bg: #151a2e;
+            --btn-bg: #00ff99;
+            --btn-hover: #00c8ff;
+            --danger: #ff5757;
+        }
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: var(--nav-bg) !important;
+            box-shadow: 0 2px 12px 0 rgba(0,255,150,0.13);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.7rem;
+            color: var(--accent2) !important;
+            letter-spacing: 1px;
+        }
+        .btn-custom {
+            background: linear-gradient(90deg, var(--btn-bg) 0%, var(--btn-hover) 100%);
+            color: #0a0f24;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            transition: background 0.2s, color 0.2s;
+            box-shadow: 0 2px 12px 0 rgba(0,255,150,0.13);
+        }
+        .btn-custom:hover {
+            background: linear-gradient(90deg, var(--btn-hover) 0%, var(--btn-bg) 100%);
+            color: #fff;
+        }
+        .dashboard-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 40px 16px 100px 16px;
+        }
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 32px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .dashboard-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(0,255,150,0.13), 0 1.5px 12px 0 rgba(0,200,255,0.08);
+            padding: 36px 28px;
+            text-align: center;
+            margin-bottom: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1.5px solid rgba(0,255,150,0.08);
+            backdrop-filter: blur(8px);
+        }
+        .dashboard-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 16px 40px 0 rgba(0,255,150,0.18);
+            border-color: var(--accent2);
+        }
+        .dashboard-card h4 {
+            color: var(--accent2);
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+        }
+        .dashboard-card p {
+            color: #b2b2b2;
+            font-size: 1rem;
+            margin-bottom: 18px;
+        }
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(0,255,150,0.13);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1.5px solid rgba(0,255,150,0.08);
+        }
+        .chart-title {
+            color: var(--accent2);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .stock-overview {
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(0,255,150,0.13);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1.5px solid rgba(0,255,150,0.08);
+        }
+        .stock-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .stock-price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--accent2);
+            margin-bottom: 12px;
+        }
+        .stock-change {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .stock-change.positive {
+            color: var(--accent);
+        }
+        .stock-change.negative {
+            color: var(--danger);
+        }
+        .stock-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .stock-detail-item {
+            margin-bottom: 8px;
+        }
+        .stock-detail-label {
+            color: #b2b2b2;
+            font-size: 0.9rem;
+        }
+        .stock-detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(0,255,150,0.13);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1.5px solid rgba(0,255,150,0.08);
+        }
+        .news-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent2);
+            margin-bottom: 16px;
+        }
+        .news-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .news-item:last-child {
+            border-bottom: none;
+        }
+        .news-item-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+        .news-item-source {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .news-item-desc {
+            font-size: 0.9rem;
+            color: #b2b2b2;
+        }
+        .forecast-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(0,255,150,0.13);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1.5px solid rgba(0,255,150,0.08);
+        }
+        .forecast-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent2);
+            margin-bottom: 16px;
+        }
+        .forecast-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .forecast-item:last-child {
+            border-bottom: none;
+        }
+        .forecast-stock {
+            font-weight: 600;
+        }
+        .forecast-prediction {
+            font-weight: 600;
+        }
+        .forecast-prediction.up {
+            color: var(--accent);
+        }
+        .forecast-prediction.down {
+            color: var(--danger);
+        }
+        .market-movers {
+            background: var(--card-bg);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(0,255,150,0.13);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1.5px solid rgba(0,255,150,0.08);
+        }
+        .market-movers-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent2);
+            margin-bottom: 16px;
+        }
+        .market-movers-table {
+            width: 100%;
+        }
+        .market-movers-table th {
+            text-align: left;
+            padding: 8px 12px;
+            color: #b2b2b2;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .market-movers-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .market-movers-table tr:last-child td {
+            border-bottom: none;
+        }
+        .market-movers-change.positive {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .market-movers-change.negative {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        .bottom-menu {
+            position: fixed;
+            bottom: 0;
+            width: 100vw;
+            background: linear-gradient(90deg, var(--nav-bg) 60%, var(--accent2) 100%);
+            box-shadow: 0 -2px 12px 0 rgba(0,255,150,0.13);
+            padding: 10px 0;
+            text-align: center;
+            z-index: 100;
+        }
+        .bottom-menu a {
+            color: #fff;
+            padding: 10px 24px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .bottom-menu a:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+        .theme-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 70px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 101;
+        }
+        .theme-toggle img {
+            width: 40px;
+            height: 40px;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 32px;
+        }
+        @media (max-width: 900px) {
+            .dashboard-title {
+                font-size: 2rem;
+            }
+            .dashboard-card {
+                padding: 24px 10px;
+            }
+            .bottom-menu a {
+                font-size: 1rem;
+                padding: 8px 10px;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+            .dashboard-container {
+                padding: 24px 2vw 80px 2vw;
+            }
+        }
+        body.dark-mode {
+            --bg-color: #0a0f24;
+            --card-bg: #1b2838;
+            --nav-bg: #0a0f24;
+            --btn-bg: #00c8ff;
+            --btn-hover: #00ff99;
+            --text-color: #e0e1dd;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">📈 Stock Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
+                </ul>
+            </div>
+            <a href="{% url 'logout_view' %}" class="btn btn-custom ms-3">Logout</a>
+        </div>
+    </nav>
+    <div class="dashboard-container">
+        <div class="dashboard-title">Stock Market Dashboard</div>
+        
+        <div class="dashboard-grid">
+            <div>
+                <!-- Stock Overview -->
+                <div class="stock-overview">
+                    <div class="stock-name">Apple Inc. (AAPL)</div>
+                    <div class="stock-price">$185.32</div>
+                    <div class="stock-change positive">+2.15% (+$3.91)</div>
+                    <div class="stock-details">
+                        <div>
+                            <div class="stock-detail-item">
+                                <div class="stock-detail-label">Market Cap</div>
+                                <div class="stock-detail-value">$2.9T</div>
+                            </div>
+                            <div class="stock-detail-item">
+                                <div class="stock-detail-label">P/E Ratio</div>
+                                <div class="stock-detail-value">28.5</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="stock-detail-item">
+                                <div class="stock-detail-label">52W High</div>
+                                <div class="stock-detail-value">$198.23</div>
+                            </div>
+                            <div class="stock-detail-item">
+                                <div class="stock-detail-label">52W Low</div>
+                                <div class="stock-detail-value">$143.90</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stock Performance Chart -->
+                <div class="chart-container">
+                    <div class="chart-title">Stock Performance</div>
+                    <canvas id="stockChart" height="250"></canvas>
+                </div>
+                
+                <!-- Portfolio Allocation Chart -->
+                <div class="chart-container">
+                    <div class="chart-title">Portfolio Allocation</div>
+                    <canvas id="portfolioChart" height="250"></canvas>
+                </div>
+            </div>
+            
+            <div>
+                <!-- Market Movers -->
+                <div class="market-movers">
+                    <div class="market-movers-title">Top Gainers & Losers</div>
+                    <table class="market-movers-table">
+                        <thead>
+                            <tr>
+                                <th>Stock</th>
+                                <th>Price</th>
+                                <th>Change</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AAPL</td>
+                                <td>$185.32</td>
+                                <td class="market-movers-change positive">+2.15%</td>
+                            </tr>
+                            <tr>
+                                <td>MSFT</td>
+                                <td>$420.45</td>
+                                <td class="market-movers-change positive">+1.87%</td>
+                            </tr>
+                            <tr>
+                                <td>TSLA</td>
+                                <td>$720.15</td>
+                                <td class="market-movers-change negative">-1.32%</td>
+                            </tr>
+                            <tr>
+                                <td>AMZN</td>
+                                <td>$178.25</td>
+                                <td class="market-movers-change positive">+0.95%</td>
+                            </tr>
+                            <tr>
+                                <td>NVDA</td>
+                                <td>$950.75</td>
+                                <td class="market-movers-change positive">+3.21%</td>
+                            </tr>
+                            <tr>
+                                <td>META</td>
+                                <td>$485.30</td>
+                                <td class="market-movers-change negative">-0.75%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- News Section -->
+                <div class="news-card">
+                    <div class="news-title">Latest Market News</div>
+                    <div class="news-item">
+                        <div class="news-item-title">Apple hits new all-time high as tech stocks rally</div>
+                        <div class="news-item-source">Reuters • 2 hours ago</div>
+                        <div class="news-item-desc">Apple shares surged to a record high, leading a rally in tech stocks as investors bet on continued growth...</div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-item-title">Fed signals potential rate cuts later this year</div>
+                        <div class="news-item-source">Bloomberg • 5 hours ago</div>
+                        <div class="news-item-desc">Federal Reserve officials indicated they could begin cutting interest rates in the coming months...</div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-item-title">Tesla faces regulatory hurdles in Europe</div>
+                        <div class="news-item-source">CNBC • 1 day ago</div>
+                        <div class="news-item-desc">Tesla's expansion in Europe faces new challenges as regulators tighten emission standards...</div>
+                    </div>
+                </div>
+                
+                <!-- Forecast Section -->
+                <div class="forecast-card">
+                    <div class="forecast-title">AI-Powered Forecasts</div>
+                    <div class="forecast-item">
+                        <div class="forecast-stock">AAPL</div>
+                        <div class="forecast-prediction up">$192.50 (+3.9%)</div>
+                    </div>
+                    <div class="forecast-item">
+                        <div class="forecast-stock">MSFT</div>
+                        <div class="forecast-prediction up">$435.20 (+3.5%)</div>
+                    </div>
+                    <div class="forecast-item">
+                        <div class="forecast-stock">TSLA</div>
+                        <div class="forecast-prediction down">$705.30 (-2.1%)</div>
+                    </div>
+                    <div class="forecast-item">
+                        <div class="forecast-stock">AMZN</div>
+                        <div class="forecast-prediction up">$185.75 (+4.2%)</div>
+                    </div>
+                    <div class="forecast-item">
+                        <div class="forecast-stock">NVDA</div>
+                        <div class="forecast-prediction up">$980.00 (+3.1%)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menu Grid -->
+        <div class="menu-grid">
+            <div class="dashboard-card">
+                <h4>Fundamental Info</h4>
+                <p>View real-time stock market insights.</p>
+                <a href="{% url 'chart_page' %}" class="btn btn-custom">Explore</a>
+            </div>
+            <div class="dashboard-card">
+                <h4>Technical Indicators</h4>
+                <p>Analyze trends and make data-driven decisions.</p>
+                <a href="{% url 'technical_indicators' 'IRFC.NS' '2025-01-01' '2025-05-01' 'candlestick' %}" class="btn btn-custom">Analyze</a>
+            </div>
+            <div class="dashboard-card">
+                <h4>Stock Screener</h4>
+                <p>Find the best stocks based on your criteria.</p>
+                <a href="{% url 'stock_screener' 'AAPL' %}" class="btn btn-custom">Screen</a>
+            </div>
+            <div class="dashboard-card">
+                <h4>Pattern Recognition</h4>
+                <p>Detect chart patterns for smarter trading.</p>
+                <a href="{% url 'pattern_checker' %}" class="btn btn-custom">Recognize</a>
+            </div>
+            <div class="dashboard-card">
+                <h4>News</h4>
+                <p>Stay updated with the latest market news.</p>
+                <a href="{% url 'news_dashboard' %}" class="btn btn-custom">News</a>
+            </div>
+            <div class="dashboard-card">
+                <h4>Forecast</h4>
+                <p>Get AI-powered stock forecasts and predictions.</p>
+                <a href="{% url 'stock_forecast' %}" class="btn btn-custom">Forecast</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bottom-menu">
+        <a href="{% url 'chart_page' %}">Fundamental Info</a>
+        <a href="{% url 'technical_indicators' 'IRFC.NS' '2025-01-01' '2025-05-01' 'candlestick' %}" class="btn btn-custom">Analyze</a>
+
+        <a href="{% url 'stock_screener' 'AAPL' %}">Stock Screener</a>
+        <a href="{% url 'pattern_checker' %}">Pattern Recognition</a>
+        <a href="{% url 'news_dashboard' %}">News</a>
+        <a href="{% url 'stock_forecast' %}">Forecast</a>
+    </div>
+    
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <img id="theme-icon" src="https://cdn-icons-png.flaticon.com/512/6714/6714978.png" alt="Toggle Theme">
+    </button>
+    
+    <script>
+        // Stock Performance Chart
+        const stockCtx = document.getElementById('stockChart').getContext('2d');
+        const stockChart = new Chart(stockCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'AAPL Stock Price',
+                    data: [150, 155, 160, 165, 170, 175, 180, 178, 182, 185, 183, 185.32],
+                    borderColor: '#00c8ff',
+                    backgroundColor: 'rgba(0, 200, 255, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#00ff99',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#b2b2b2'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#b2b2b2'
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Portfolio Allocation Chart
+        const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+        const portfolioChart = new Chart(portfolioCtx, {
+            type: 'pie',
+            data: {
+                labels: ['AAPL', 'MSFT', 'TSLA', 'AMZN', 'NVDA', 'Others'],
+                datasets: [{
+                    data: [30, 25, 15, 10, 10, 10],
+                    backgroundColor: [
+                        '#00ff99',
+                        '#00c8ff',
+                        '#ff5757',
+                        '#ffcc00',
+                        '#cc66ff',
+                        '#999999'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#e0e1dd',
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+            document.getElementById('theme-icon').src = document.body.classList.contains('dark-mode') ? "https://cdn-icons-png.flaticon.com/512/6714/6714972.png" : "https://cdn-icons-png.flaticon.com/512/6714/6714978.png";
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-icon').src = "https://cdn-icons-png.flaticon.com/512/6714/6714972.png";
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Data</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --card-bg: #1e293b;
+            --border: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .main-content {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .header p {
+            color: var(--gray);
+            margin-top: 0.5rem;
+        }
+
+        .stock-info-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .stock-info-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 16px 40px 0 rgba(37,99,235,0.13);
+            border-color: var(--primary);
+        }
+        .stock-info-card h2 {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .stock-info-card p {
+            margin: 0.5rem 0;
+            color: var(--light);
+        }
+        .stock-info-card a {
+            color: var(--primary);
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        .stock-info-card a:hover {
+            color: var(--secondary);
+        }
+
+        /* Data Selection */
+        .data-select-section {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+        .data-select-section h3 {
+            color: var(--primary);
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+        }
+        .form-check {
+            margin-bottom: 1rem;
+            color: var(--gray);
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            padding: 12px 32px;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.13);
+            margin-top: 0.5rem;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+            box-shadow: 0 8px 24px rgba(124,58,237,0.18);
+        }
+
+        /* Data Sections */
+        .data-section {
+            margin-top: 2rem;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        .data-section.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .data-section .stock-info-card {
+            margin-bottom: 0;
+        }
+
+        /* Table Styling */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+        .table th, .table td {
+            padding: 0.9rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .table th {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+        }
+        .table-striped tbody tr:nth-child(odd) {
+            background: rgba(37,99,235,0.07);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .main-content { padding: 1.5rem 0.5rem; }
+        }
+        @media (max-width: 600px) {
+            .main-content { padding: 1rem 0.2rem; }
+            .stock-info-card, .data-select-section { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-chart-line logo-icon"></i>
+            <span class="logo-text"></span>
+        </div>
+        
+    </aside>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>Stock Data for {{ stock_symbol }}</h1>
+            <p>Get the most up-to-date information about your stock investments!</p>
+        </div>
+        
+        <!-- Stock Information Section -->
+        <div class="stock-info-card">
+            <h2>{{ stock_symbol }} - {{ company_name }}</h2>
+            <p><strong>Sector:</strong> {{ sector }}</p>
+            <p><strong>Industry:</strong> {{ industry }}</p>
+            <p><strong>Website:</strong> <a href="{{ website }}" target="_blank">{{ website }}</a></p>
+            <p><strong>Business Summary:</strong> {{ business_summary }}</p>
+        </div>
+
+        <!-- Data Selection Form -->
+        <div class="data-select-section">
+            <h3>Select Financial Data:</h3>
+            <form id="dataSelectionForm">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="financialData" id="dividends" value="dividends">
+                    <label class="form-check-label" for="dividends">Dividends</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="financialData" id="financials" value="financials">
+                    <label class="form-check-label" for="financials">Financials</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="financialData" id="balanceSheet" value="balanceSheet">
+                    <label class="form-check-label" for="balanceSheet">Balance Sheet</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="financialData" id="quarterlyFinancials" value="quarterlyFinancials">
+                    <label class="form-check-label" for="quarterlyFinancials">Quarterly Financials</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="financialData" id="cashflow" value="cashflow">
+                    <label class="form-check-label" for="cashflow">Cash Flow</label>
+                </div>
+            </form>
+            <button id="generateBtn" class="btn-primary">Generate</button>
+        </div>
+        <!-- Display Financial Data -->
+        <div id="dividendsData" class="data-section">
+            <div class="stock-info-card">
+                <h3>Dividends Data</h3>
+                {{ dividends_html|safe }}
+            </div>
+        </div>
+        <div id="financialsData" class="data-section">
+            <div class="stock-info-card">
+                <h3>Financials Data</h3>
+                {{ financials_html|safe }}
+            </div>
+        </div>
+        <div id="balanceSheetData" class="data-section">
+            <div class="stock-info-card">
+                <h3>Balance Sheet Data</h3>
+                {{ balance_sheet_html|safe }}
+            </div>
+        </div>
+        <div id="quarterlyFinancialsData" class="data-section">
+            <div class="stock-info-card">
+                <h3>Quarterly Financials Data</h3>
+                {{ quarterly_financials_html|safe }}
+            </div>
+        </div>
+        <div id="cashflowData" class="data-section">
+            <div class="stock-info-card">
+                <h3>Cash Flow Data</h3>
+                {{ cashflow_html|safe }}
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    document.getElementById("generateBtn").addEventListener("click", function() {
+        document.querySelectorAll('.data-section').forEach(function(section) {
+            section.classList.remove('show');
+        });
+        const selectedRadio = document.querySelector('input[name="financialData"]:checked');
+        if (selectedRadio) {
+            const selectedValue = selectedRadio.value;
+            document.getElementById(selectedValue + 'Data').classList.add('show');
+        } else {
+            alert("Please select a financial data type to display.");
+        }
+    });
+</script>
+</body>
+</html>

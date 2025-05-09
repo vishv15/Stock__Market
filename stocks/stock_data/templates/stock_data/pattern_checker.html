@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Recognition Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        * { 
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: var(--light);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-brand i {
+            font-size: 1.75rem;
+        }
+
+        .logout-btn {
+            background: var(--light);
+            color: var(--primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--border);
+            transform: translateY(-2px);
+        }
+
+        .dashboard-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .search-form {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .results-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--light);
+            padding: 1.5rem;
+        }
+
+        .results-header h4 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .pattern-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pattern-item {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .pattern-item:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .pattern-date {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .pattern-name {
+            color: var(--gray);
+        }
+
+        .bullish {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .bearish {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .neutral {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            color: var(--gray);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link i {
+            font-size: 1.5rem;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-danger {
+            background-color: #fef2f2;
+            color: var(--danger);
+            border: 1px solid #fee2e2;
+        }
+
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .pattern-item {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+
+            .bottom-nav {
+                padding: 0.75rem;
+            }
+
+            .nav-link span {
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+
+            .logout-btn {
+                padding: 0.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-chart-line"></i>
+                Pattern Recognition
+            </a>
+            <a href="{% url 'logout_view' %}" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <h1 class="dashboard-title">Candlestick Pattern Recognition</h1>
+
+        <form method="POST" class="search-form">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" class="search-input" name="symbol" placeholder="Enter Stock Symbol (e.g. RELIANCE.NS)" required>
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i> Analyze
+                </button>
+            </div>
+        </form>
+
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        {% if symbol %}
+            <div class="results-card">
+                <div class="results-header">
+                    <h4>Detected Patterns for {{ symbol }}</h4>
+                </div>
+                <ul class="pattern-list">
+                    {% for pattern in patterns %}
+                        <li class="pattern-item">
+                            <div>
+                                <span class="pattern-date">{{ pattern.date }}</span>
+                                <span class="pattern-name">{{ pattern.name }}</span>
+                            </div>
+                            <span class="{{ pattern.signal|lower }}">{{ pattern.signal }}</span>
+                        </li>
+                    {% empty %}
+                        <li class="pattern-item">No patterns detected.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="{% url 'chart_page' %}" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            <span>Fundamentals</span>
+        </a>
+        <a href="{% url 'technical_indicators' 'AAPL' '2024-01-01' '2024-12-31' 'candlestick' %}" class="nav-link">
+            <i class="fas fa-chart-line"></i>
+            <span>Technical</span>
+        </a>
+        <a href="{% url 'stock_screener' 'AAPL' %}" class="nav-link">
+            <i class="fas fa-search"></i>
+            <span>Screener</span>
+        </a>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
